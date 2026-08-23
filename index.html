@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Miva v0.3</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#172036;--muted:#748078;--sage:#9cb9a5;--sage2:#e1ebe4;--purple:#8b5cf6;--peach:#f8e3d7;--line:#e8e8e3;--warn:#f7e9bd}
+*{box-sizing:border-box}body{margin:0;background:#ecebe7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}
+.app{max-width:430px;min-height:100vh;margin:auto;background:var(--bg);padding-bottom:92px}.hidden{display:none!important}.screen{display:none}.screen.active{display:block}
+header{padding:18px 20px 8px;display:flex;justify-content:space-between;align-items:center}.logo{font-size:29px;font-weight:900;letter-spacing:5px}.avatar{width:40px;height:40px;border-radius:50%;background:var(--sage2);display:grid;place-items:center;font-weight:800}
+main{padding:0 16px}.card{background:var(--card);border-radius:22px;padding:16px;margin:10px 0;box-shadow:0 4px 18px #18211b0b}.hero{background:linear-gradient(145deg,#f9e7dc,#deebe3);border-radius:28px;padding:22px;margin:8px 0 16px}.hero h1{font-size:25px;line-height:1.08;margin:5px 0 8px}.hero p{margin:0;line-height:1.45;color:#56645d}.small{font-size:12px;color:var(--muted)}
+.btn{border:0;border-radius:16px;background:var(--ink);color:#fff;padding:14px 16px;font-weight:800;width:100%}.btn.light{background:var(--sage2);color:var(--ink)}.btn.purple{background:var(--purple)}
+.row{display:flex;gap:8px;flex-wrap:wrap}.chip{border:0;background:#fff;border-radius:999px;padding:10px 13px;font-weight:750;color:var(--ink)}.chip.active{background:var(--ink);color:#fff}
+.sectionTitle{display:flex;justify-content:space-between;align-items:center;margin:22px 3px 8px}.sectionTitle h2{margin:0;font-size:18px}
+.meal{display:flex;gap:12px;align-items:center}.ico{width:44px;height:44px;border-radius:14px;background:var(--sage2);display:grid;place-items:center;font-size:21px}.grow{flex:1}.meal h3{margin:0 0 3px;font-size:15px}.meal p{margin:0;font-size:12px;color:var(--muted)}
+.macrobar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.macro{background:#fff;border-radius:16px;padding:12px;text-align:center}.macro b{display:block;font-size:16px}.kcal{margin-top:9px;text-align:center;font-size:12px;color:var(--muted)}
+.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.q{border:0;background:#fff;border-radius:20px;padding:16px;text-align:left;font-weight:800;color:var(--ink)}.q span{display:block;font-size:25px;margin-bottom:6px}
+.biglog{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.log{border:0;border-radius:20px;padding:18px 12px;background:#fff;font-weight:800;color:var(--ink);text-align:center}.log b{font-size:27px;display:block;margin-bottom:7px}
+input,select,textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;margin:6px 0 12px;font:inherit;color:var(--ink)}.notice{background:var(--warn);padding:13px;border-radius:15px;font-size:13px;line-height:1.4}
+.overlay{position:fixed;inset:0;background:linear-gradient(160deg,#f6e6dd,#dcebe2);z-index:20;display:flex;align-items:center;justify-content:center;padding:28px}.splash{max-width:350px;text-align:center}.splash .m{font-size:38px;font-weight:900;letter-spacing:6px;margin-bottom:28px}.splash h1{font-size:31px;line-height:1.12}.splash p{color:#526158;line-height:1.5}
+.modalWrap{position:fixed;inset:0;background:#0005;z-index:19;display:flex;align-items:flex-end;justify-content:center}.modal{width:min(430px,100%);background:var(--bg);border-radius:28px 28px 0 0;padding:22px 18px 28px}.modal h2{margin-top:0}.choiceRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:78px;background:#ffffffee;backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;padding-bottom:8px}.nav button{border:0;background:none;color:var(--muted);font-size:10px}.nav b{display:block;font-size:20px;margin-bottom:3px}.nav .on{color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="app">
+<div id="splash" class="overlay"><div class="splash"><div class="m">MIVA</div><div class="small">BUONGIORNO</div><h1>Ogni scelta di oggi costruisce il tuo domani.</h1><p>Non serve essere perfetti. Serve capire cosa ti fa stare bene.</p><button class="btn purple" onclick="enterDay()">Inizia la giornata</button></div></div>
+<div id="dayPrompt" class="modalWrap hidden"><div class="modal"><div class="small">PRIMA APERTURA DI OGGI</div><h2>Hai pasti particolari in programma?</h2><p class="small">Pizza, ristorante, aperitivo, pranzo fuori, gelato… Miva organizzerà il resto della giornata attorno a questo.</p><div class="choiceRow"><button class="btn light" onclick="closePrompt()">No</button><button class="btn purple" onclick="showSpecialInput()">Sì</button></div><div id="specialInput" class="hidden" style="margin-top:12px"><input id="specialMeal" placeholder="es. Pizza + gelato"><input type="time" value="20:30"><button class="btn" onclick="saveSpecial()">Organizza la giornata</button></div></div></div>
+<header><div class="logo">MIVA</div><div class="avatar">E</div></header>
+<main>
+<section id="oggi" class="screen active">
+<div class="hero"><div class="small">OGGI · <span id="dayLabel">OFF</span></div><h1>Buon pomeriggio, Elisa.</h1><p id="heroText">Il prossimo passo è semplice: pensa al prossimo pasto.</p></div>
+<div class="row"><button class="chip active" onclick="setDay(this,'OFF')">OFF · Riposo</button><button class="chip" onclick="setDay(this,'ON')">ON · Palestra</button></div>
+<div class="sectionTitle"><h2>Macronutrienti</h2><button class="chip" onclick="toggleCalories(this)">Calorie: visibili</button></div>
+<div class="macrobar"><div class="macro"><b id="carb">195 g</b>Carboidrati</div><div class="macro"><b id="prot">97 g</b>Proteine</div><div class="macro"><b id="fat">58 g</b>Grassi</div></div><div id="kcal" class="kcal">1688 kcal previste</div>
+<div class="sectionTitle"><h2>Prossimo pasto</h2><span class="small">tra 2 h 15 min</span></div>
+<div class="card meal"><div class="ico">🥗</div><div class="grow"><h3>Pranzo</h3><p>Verdure + proteina + carboidrato del piano</p></div><b>›</b></div>
+<div id="specialBanner" class="card hidden"><b>🍕 Pasto programmato</b><p class="small" id="specialText"></p></div>
+<div class="sectionTitle"><h2>Registra</h2><span class="small">stile rapido</span></div>
+<div class="biglog"><button class="log" onclick="alert('Qui apriremo ricerca alimenti, recenti, preferiti, ricette e scanner.')"><b>🍽️</b>Pasto</button><button class="log"><b>🍫</b>Fame / voglia</button><button class="log"><b>🙂</b>Umore</button><button class="log"><b>⚡</b>Energia</button><button class="log"><b>🤢</b>Digestione</button><button class="log"><b>🏋️</b>Attività</button></div>
+<div class="sectionTitle"><h2>Azioni rapide</h2></div><div class="quick"><button class="q" onclick="go('chef',document.querySelectorAll('.nav button')[1])"><span>👩‍🍳</span>Cosa cuciniamo oggi?</button><button class="q" onclick="showManualSpecial()"><span>📅</span>Pasto programmato</button><button class="q"><span>📷</span>Scanner alimenti</button><button class="q"><span>📖</span>Ricette salvate</button></div>
+</section>
+<section id="chef" class="screen"><div class="hero"><div class="small">CHEF MIVA</div><h1>Cosa cuciniamo oggi?</h1><p>Partiamo dal tuo piano, dal tempo che hai e da quello che hai voglia di mangiare.</p></div><div class="card"><label class="small">Pasto</label><select><option>Pranzo</option><option>Cena</option><option>Colazione</option></select><label class="small">Tempo disponibile</label><select><option>5 minuti</option><option selected>20 minuti</option><option>30+ minuti</option></select><label class="small">Quanta voglia hai di cucinare?</label><select><option>Pochissima</option><option selected>Normale</option><option>Alta</option></select><label class="small">Cottura</label><select><option>Friggitrice ad aria</option><option>Padella</option><option>Forno</option><option>Pentola a pressione</option></select><button class="btn" onclick="document.getElementById('recipe').classList.remove('hidden')">Proponimi 3 ricette</button></div><div id="recipe" class="hidden"><div class="card"><b>1. Bowl croccante pollo e ceci</b><p class="small">20 min · air fryer + padella · compatibile col piano</p></div><div class="card"><b>2. Uovo al pomodoro con pane e zucchine</b><p class="small">15 min · padella</p></div><div class="card"><b>3. Insalatona tonno, ceci e frutti di bosco</b><p class="small">8 min · senza cottura</p></div></div></section>
+<section id="diario" class="screen"><div class="hero"><div class="small">DIARIO</div><h1>Come stai oggi?</h1><p>Registrazione rapida, con grandi pulsanti e categorie personalizzabili.</p></div><div class="biglog"><button class="log"><b>🙂</b>Umore</button><button class="log"><b>⚡</b>Energia</button><button class="log"><b>🍽️</b>Sazietà</button><button class="log"><b>😶‍🌫️</b>Annebb.</button><button class="log"><b>🔥</b>Stress</button><button class="log"><b>🤢</b>Digestione</button><button class="log"><b>🏋️</b>Attività</button><button class="log"><b>⚖️</b>Peso</button></div><div class="card"><b>Dolce dopo i pasti</b><p class="small">Obiettivo: 2–3 volte a settimana, senza bisogno automatico.</p></div><div class="notice">Miva può mostrare associazioni tra pasti e sintomi, ma non diagnostica allergie o intolleranze.</div></section>
+<section id="profilo" class="screen"><div class="hero"><div class="small">PROFILO</div><h1>Elisa</h1><p>19 anni · 163 cm · 59 kg · ricomposizione + dimagrimento</p></div><div class="card"><b>Preferenze display</b><p class="small">Macronutrienti sempre visibili. Calorie configurabili.</p></div><div class="card"><b>Cotture</b><p class="small">Air fryer · padella · forno · evitare fritture in olio</p></div><div class="card"><b>Segnalazioni</b><p class="small">Pesto: mal digerito · Grana: da limitare</p></div></section>
+</main>
+<nav class="nav"><button class="on" onclick="go('oggi',this)"><b>⌂</b>Home</button><button onclick="go('chef',this)"><b>♨</b>Chef</button><button onclick="go('diario',this)"><b>＋</b>Diario</button><button onclick="alert('Scanner: prossimo sprint')"><b>⌗</b>Scanner</button><button onclick="go('profilo',this)"><b>◉</b>Profilo</button></nav>
+</div>
+<script>
+let day='OFF',caloriesVisible=true;
+const targets={OFF:{c:195,p:97,f:58,k:1688},ON:{c:216,p:100,f:59,k:1795}};
+function enterDay(){document.getElementById('splash').classList.add('hidden');document.getElementById('dayPrompt').classList.remove('hidden')}
+function closePrompt(){document.getElementById('dayPrompt').classList.add('hidden')}
+function showSpecialInput(){document.getElementById('specialInput').classList.remove('hidden')}
+function saveSpecial(){const v=document.getElementById('specialMeal').value||'Pasto speciale';document.getElementById('specialText').textContent=v+' · Miva adatterà i pasti precedenti senza compensazioni eccessive.';document.getElementById('specialBanner').classList.remove('hidden');document.getElementById('heroText').textContent='Ho tenuto conto del pasto programmato e riorganizzato il resto della giornata.';closePrompt()}
+function showManualSpecial(){document.getElementById('dayPrompt').classList.remove('hidden');document.getElementById('specialInput').classList.remove('hidden')}
+function setDay(el,d){day=d;document.querySelectorAll('#oggi .row .chip').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById('dayLabel').textContent=d;const t=targets[d];document.getElementById('carb').textContent=t.c+' g';document.getElementById('prot').textContent=t.p+' g';document.getElementById('fat').textContent=t.f+' g';document.getElementById('kcal').textContent=t.k+' kcal previste'}
+function toggleCalories(el){caloriesVisible=!caloriesVisible;document.getElementById('kcal').classList.toggle('hidden',!caloriesVisible);el.textContent='Calorie: '+(caloriesVisible?'visibili':'nascoste')}
+function go(id,el){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));el.classList.add('on');window.scrollTo(0,0)}
+</script>
+</body>
+</html>
