@@ -20,7 +20,7 @@ export default function AuthForm() {
 
     try {
       if (mode === 'signup') {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -32,11 +32,15 @@ export default function AuthForm() {
         });
 
         if (error) throw error;
-        setMessage('Account creato. Se richiesto, controlla la tua email per confermare la registrazione.');
+        if (data.session) {
+          window.location.href = '/onboarding';
+          return;
+        }
+        setMessage('Account creato. Controlla la tua email per confermare la registrazione, poi accedi a Miva.');
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        window.location.href = '/';
+        window.location.href = '/onboarding';
       }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Si è verificato un errore.');
@@ -48,18 +52,10 @@ export default function AuthForm() {
   return (
     <section className="authCard">
       <div className="authTabs" role="tablist" aria-label="Accesso Miva">
-        <button
-          type="button"
-          className={mode === 'signup' ? 'active' : ''}
-          onClick={() => setMode('signup')}
-        >
+        <button type="button" className={mode === 'signup' ? 'active' : ''} onClick={() => setMode('signup')}>
           Crea account
         </button>
-        <button
-          type="button"
-          className={mode === 'login' ? 'active' : ''}
-          onClick={() => setMode('login')}
-        >
+        <button type="button" className={mode === 'login' ? 'active' : ''} onClick={() => setMode('login')}>
           Accedi
         </button>
       </div>
@@ -101,10 +97,7 @@ export default function AuthForm() {
       </form>
 
       {message ? <p className="authMessage" role="status">{message}</p> : null}
-
-      <p className="authFinePrint">
-        Miva utilizza il tuo account per salvare piano, preferenze e progressi in modo sicuro.
-      </p>
+      <p className="authFinePrint">Miva utilizza il tuo account per salvare piano, preferenze e progressi in modo sicuro.</p>
     </section>
   );
 }
