@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function HomePage() {
   return (
     <main className="shell">
@@ -7,7 +9,7 @@ export default function HomePage() {
             <span className="eyebrow">Lunedì</span>
             <h1 className="brand">Miva</h1>
           </div>
-          <button className="avatar" aria-label="Apri profilo">M</button>
+          <Link className="avatar" href="/login" aria-label="Accedi o apri profilo">M</Link>
         </header>
 
         <section className="heroCard">
