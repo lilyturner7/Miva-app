@@ -1,0 +1,25 @@
+drop policy if exists "profiles own rows" on public.profiles;
+drop policy if exists "nutrition_plans own rows" on public.nutrition_plans;
+drop policy if exists "sports own rows" on public.sports;
+drop policy if exists "daily_plans own rows" on public.daily_plans;
+drop policy if exists "daily_meals own rows" on public.daily_meals;
+drop policy if exists "meal_items own rows" on public.meal_items;
+drop policy if exists "daily_events own rows" on public.daily_events;
+drop policy if exists "pantry_items own rows" on public.pantry_items;
+drop policy if exists "shopping_items own rows" on public.shopping_items;
+drop policy if exists "diary_entries own rows" on public.diary_entries;
+drop policy if exists "medication_reminders own rows" on public.medication_reminders;
+drop policy if exists "user_settings own rows" on public.user_settings;
+
+create policy "profiles own rows" on public.profiles for all using (id = auth.uid()) with check (id = auth.uid());
+create policy "nutrition_plans own rows" on public.nutrition_plans for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "sports own rows" on public.sports for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "daily_plans own rows" on public.daily_plans for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "daily_meals own rows" on public.daily_meals for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "meal_items own rows" on public.meal_items for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "daily_events own rows" on public.daily_events for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "pantry_items own rows" on public.pantry_items for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "shopping_items own rows" on public.shopping_items for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "diary_entries own rows" on public.diary_entries for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "medication_reminders own rows" on public.medication_reminders for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "user_settings own rows" on public.user_settings for all using (user_id = auth.uid()) with check (user_id = auth.uid());
