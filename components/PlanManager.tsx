@@ -148,6 +148,8 @@ export default function PlanManager() {
             </article>
           ))}
         </section>
+
+        {plans.length ? <a className="primaryAction" style={{display:'block',textAlign:'center',textDecoration:'none',marginTop:16}} href="/preferences">Valuta i cibi del mio piano</a> : null}
       </section>
     </main>
   );
