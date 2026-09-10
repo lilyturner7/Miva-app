@@ -50,6 +50,8 @@ const initialAnswers: Answers = {
   notifications: ['medications'],
   plan_structure: 'single',
   plan_count: 1,
+  startup_mode: 'learn_first',
+  startup_learning_days: 7,
 };
 
 export default function OnboardingForm() {
@@ -120,6 +122,9 @@ export default function OnboardingForm() {
         neutral_language: Boolean(answers.neutral_language),
         avoid_compensation_language: Boolean(answers.avoid_compensation_language),
         pantry_enabled: Boolean(answers.pantry_enabled),
+        startup_mode: String(answers.startup_mode || 'learn_first'),
+        startup_learning_days: Number(answers.startup_learning_days || 7),
+        startup_started_at: new Date().toISOString(),
       },
       { onConflict: 'id' },
     );
@@ -157,6 +162,9 @@ export default function OnboardingForm() {
         neutral_language: Boolean(answers.neutral_language),
         avoid_compensation_language: Boolean(answers.avoid_compensation_language),
         pantry_enabled: Boolean(answers.pantry_enabled),
+        startup_mode: String(answers.startup_mode || 'learn_first'),
+        startup_learning_days: Number(answers.startup_learning_days || 7),
+        startup_started_at: new Date().toISOString(),
       },
       { onConflict: 'id' },
     );
@@ -174,6 +182,9 @@ export default function OnboardingForm() {
           freeze_leftovers: Boolean(answers.freeze_leftovers),
           supermarkets: answers.supermarkets || [],
           notifications: toNotificationObject(answers.notifications),
+          startup_mode: String(answers.startup_mode || 'learn_first'),
+          startup_learning_days: Number(answers.startup_learning_days || 7),
+          show_macros: Boolean(answers.show_calories),
         },
         { onConflict: 'user_id' },
       );
@@ -213,7 +224,7 @@ export default function OnboardingForm() {
         {step === 13 && <SportStep {...props} />}
         {step === 14 && <PantryStep {...props} />}
         {step === 15 && <NotificationsStep {...props} />}
-        {step === 16 && <ReadyStep />}
+        {step === 16 && <ReadyStep {...props} />}
 
         {error ? <p className="formError">{error}</p> : null}
 
@@ -461,10 +472,13 @@ function NotificationsStep(p: Props) {
   </Step>;
 }
 
-function ReadyStep() {
-  return <Step title="Miva è pronta per conoscerti." subtitle="Da qui in poi l'app userà le informazioni che hai scelto per ridurre le decisioni quotidiane.">
+function ReadyStep(p: Props) {
+  return <Step title="Come vuoi iniziare con Miva?" subtitle="Puoi cambiare modalità in qualsiasi momento.">
+    <Choice title="Modalità di partenza" options={['Impara prima da me','Voglio tutto subito']} current={p.answers.startup_mode === 'full' ? 'Voglio tutto subito' : 'Impara prima da me'} onPick={(v) => p.setValue('startup_mode', v === 'Voglio tutto subito' ? 'full' : 'learn_first')} />
+    {p.answers.startup_mode !== 'full' ? <Choice title="Per quanti giorni vuoi farmi osservare prima?" options={['7','14']} current={String(p.answers.startup_learning_days || 7)} onPick={(v) => p.setValue('startup_learning_days', Number(v))} /> : null}
     <div className="readyCard">
-      <span>✓ Profilo</span><span>✓ Preferenze</span><span>✓ Routine</span><span>✓ Piano</span><span>✓ Organizzazione</span>
+      <span>✓ Profilo</span><span>✓ Routine</span><span>✓ Piano</span><span>✓ Gusti iniziali</span>
+      <span>{p.answers.startup_mode === 'full' ? '✨ Tutte le funzioni subito' : '🌱 Apprendimento graduale'}</span>
     </div>
   </Step>;
 }
